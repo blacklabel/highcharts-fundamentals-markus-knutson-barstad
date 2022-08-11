@@ -51,7 +51,7 @@ Highcharts.chart('container', {
         max: largest * 2,
         
         endOnTick: false,   // we need to set endOnTick to false in order to disable rounding up of yAxis.max
-        tickInterval: 2.5,  // to fit the tick intervals in the screenshot
+        tickInterval: 2.5,  // and i set tickInterval to make the ticks on this chart fit the one shown in the screenshot 
 
         plotLines: [{
             color: '#92C08A',
