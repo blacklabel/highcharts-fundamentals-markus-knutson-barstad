@@ -55,7 +55,7 @@ Highcharts.chart('container', {
 
         plotLines: [{
             color: '#92C08A',
-            width: 4,
+            width: 4, // also i added this to make the dashes more apparent
             value: 1.5 * largest,
             dashStyle: "Dash",
         }],
