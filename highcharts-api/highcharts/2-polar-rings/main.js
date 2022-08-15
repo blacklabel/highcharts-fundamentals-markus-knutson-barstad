@@ -65,14 +65,12 @@ Highcharts.chart('container', {
         endOnTick: false,
         tickInterval: 2.5,
 
-        plotLines: [
-            {
+        plotLines: [{
                 color: '#92C08A',
                 width: 4,
                 value: 1.5 * largest,
                 dashStyle: "Dash", 
-            }
-        ],
+            }],
     },
 
     series: [{
