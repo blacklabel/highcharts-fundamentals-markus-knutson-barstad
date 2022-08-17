@@ -1,13 +1,11 @@
 let largest = 0;
-
 const createSeriesData = () => {
     const data = [];
 
     Array.from(Array(3)).forEach(n => {
         n = (Math.random() * 100) * 0.1;
-
         if(n > largest)
-            largest = n;
+            largest = n
         
         data.push(n);
     });
@@ -17,26 +15,64 @@ const createSeriesData = () => {
 
 const chartData = Array.from(Array(3)).map(()=>createSeriesData());
 
-Highcharts.chart('container', {
+const c = Highcharts.chart('container', {
     chart: {
-        type: 'column'
+        type: 'column',
+
+        events: {
+            load(){ // this is how i found i could set the yAxis.max as required by the task
+                
+                let max = 0;
+                
+                this.series.forEach((s) => {
+                    if(max < s.dataMax)
+                        max = s.dataMax
+                });
+
+                this.yAxis[0].update({
+                    max: max * 2
+                })
+
+            }
+        }
     },
 
     title: null,
     
     plotOptions: {
-        series: {
+         series: {
+            
             dataLabels: {
                 enabled: true,
                 format: 'MAX',
-                filter: {
-                    property: 'y',
-                    operator: '==',
-                    value: largest
+            },
+
+            events: {
+                afterAnimate: function(){
+
+                    /*
+                        - i am trying to set the labels filter here, so that only the biggest col(s) have the "MAX" label
+                    */
+                    this.chart.options.plotOptions.series.dataLabels.filter = {
+                            property: 'y',
+                            operator: '==',
+                            
+                            value: function(){
+                                let max = 0;
+                                
+                                this.chart.series.forEach((series) => {
+                                    if(max < series.dataMax)
+                                        max = series.dataMax
+                                });
+
+                                return max;
+                            }
+                        }
+                        
+                    }
                 }
-            }
-            
-        }
+           }
+        
     },
 
     xAxis: {
@@ -48,7 +84,6 @@ Highcharts.chart('container', {
     },
 
     yAxis: {
-        max: largest * 2,
         
         endOnTick: false,   // we need to set endOnTick to false in order to disable rounding up of yAxis.max
         tickInterval: 2.5,  // and i set tickInterval to make the ticks on this chart fit the one shown in the screenshot 
