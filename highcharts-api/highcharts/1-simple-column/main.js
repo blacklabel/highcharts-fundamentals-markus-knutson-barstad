@@ -1,4 +1,4 @@
-let largest = 0;
+
 const createSeriesData = () => {
     const data = [];
 
