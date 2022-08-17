@@ -1,13 +1,10 @@
-
 const createSeriesData = () => {
     const data = [];
 
-    Array.from(Array(3)).forEach(n => {
-        n = (Math.random() * 100) * 0.1;
-        if(n > largest)
-            largest = n
-        
-        data.push(n);
+    Array.from(Array(3)).forEach(() => {
+        data.push(
+            (Math.random() * 100) * 0.1
+        );
     });
 
     return data;
@@ -32,6 +29,7 @@ Highcharts.chart('container', {
 
                 this.yAxis[0].update({
                     max: max * 2,
+
                     plotLines: [{
                         color: '#92C08A',
                         width: 4, // also i added this to make the dashes more apparent
