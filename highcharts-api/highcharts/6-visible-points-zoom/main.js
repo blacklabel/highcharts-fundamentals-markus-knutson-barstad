@@ -1,7 +1,6 @@
 const dataMaker = () => Array.from(Array(100)).map(()=>Math.floor(Math.random()* 100)); //build ints
 const checkCoord = (n,min,max) => n >= min && n <= max;
 
-
 Highcharts.chart('container',{
 	accessibility: {
 		enabled: false
@@ -43,18 +42,18 @@ Highcharts.chart('container',{
 
 				console.log(highest);
 
-				this.label = ren.label("visible points: " + pCount, this.xAxis[0].pos, this.spacingBox.height).add();
+				this.label = ren.label('visible points: ' + pCount, this.xAxis[0].pos, this.spacingBox.height).add();
 				
 				console.log(this.xAxis[0]);
 				this.highestLabel = ren.label(
-					highest.y + "", 
+					highest.y + '', 
 					highest.plotX + this.xAxis[0].left - 11,
 					highest.plotY + this.yAxis[0].top - 26)
-				.attr({aligh:"center"})
-				.css({color:"red"})
+				.attr({aligh:'center'})
+				.css({color:'red'})
 				.add();
 
-				this.dot = ren.circle(highest.plotX + this.xAxis[0].left,this.xAxis[0].height + 47,4).attr({align:"center"}).css({color:"red"}).add().toFront();
+				this.dot = ren.circle(highest.plotX + this.xAxis[0].left,this.xAxis[0].height + 47,4).attr({align:'center'}).css({color:'red'}).add().toFront();
 			}
 		}
 	},
