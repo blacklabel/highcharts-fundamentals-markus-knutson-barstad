@@ -1,7 +1,3 @@
-
-//middle of the chart, its initial value is half the size of the container
-let chartMid = 500;
-
 const dataSets = [
   [50, 36, 50, 40, 14],
   [17, 45, 55, 78, 17]
@@ -40,23 +36,20 @@ Highcharts.chart('container', {
   chart: {
     type: 'bar',
     marginTop: 50,
-
     events: {
       render: function() {
         //clearing
-        clearScreen(this.customAxisTitles);
-        clearScreen(this.customHiderLine);
-
-        //declaring
-        chartMid = this.chartWidth / 2;
-        const ren = this.renderer;
-        this.customAxisTitles = [];
-        this.customLabels = [];
+        const chart = this;
+        const ren = chart.renderer;
+        clearScreen(chart.customAxisTitles);
+        clearScreen(chart.customHiderLine);
+        chart.customAxisTitles = [];
+        chart.customLabels = [];
 
         //hiderline
-        this.customHiderLine = ren.path([
-            'M', this.yAxis[1].pos + this.yAxis[1].width, this.xAxis[0].pos,
-            'L', this.yAxis[1].pos + this.yAxis[1].width, this.xAxis[0].pos + this.yAxis[0].height
+        chart.customHiderLine = ren.path([
+            'M', chart.yAxis[1].pos + chart.yAxis[1].width, chart.xAxis[0].pos,
+            'L', chart.yAxis[1].pos + chart.yAxis[1].width, chart.xAxis[0].pos + chart.yAxis[0].height
         ])
         .attr({
           'stroke-width': 5,
@@ -67,8 +60,8 @@ Highcharts.chart('container', {
 
         //custom titles
         ['Manegerial positions', 'Non manegerial positions'].forEach((title, index) => {
-          this.customAxisTitles.push(
-            ren.label(title, this.yAxis[index].pos + this.yAxis[index].width / 2, 0)
+          chart.customAxisTitles.push(
+            ren.label(title, chart.yAxis[index].pos + chart.yAxis[index].width / 2, 0)
             .attr({
               align: 'center'
             })
@@ -78,7 +71,7 @@ Highcharts.chart('container', {
             })
           );
         })
-        this.customAxisTitles.forEach(l => l.add());
+        chart.customAxisTitles.forEach(l => l.add());
       }
     }
   },
@@ -91,17 +84,18 @@ Highcharts.chart('container', {
     enabled: false
   },
 
-  xAxis: {
+  xAxis: [{
     lineWidth: 0,
     lineColor: 'transparent',
     tickWidth:0,
+    left: "50%",
     labels: {
-      x: chartMid,
+      align:"left",
       formatter: function () {
         return "Dep" + (5 - this.pos);
       }
     }
-  },
+  }],
 
   yAxis: [{
       left: '0%',
@@ -119,13 +113,11 @@ Highcharts.chart('container', {
   plotOptions: {
     series: {
       stacking: 'normal',
-      
       dataLabels: {
         enabled: true,
         color: 'white',
         format: '{y}%'
       }
-
     }
   },
 
