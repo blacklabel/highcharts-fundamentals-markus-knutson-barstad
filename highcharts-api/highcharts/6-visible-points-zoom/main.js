@@ -6,7 +6,6 @@ const clearScreen = (toClean) => {
 	}
 }
 Highcharts.chart('container',{
-
 	chart: {
 		type: 'line',
 		zoomType: 'xy',
@@ -14,7 +13,6 @@ Highcharts.chart('container',{
 		events: {
 			render: function () {
 				const chart = this;
-
 				const ren  = chart.renderer;
 				const xMin = chart.xAxis[0].min;
 				const xMax = chart.xAxis[0].max;
@@ -32,9 +30,6 @@ Highcharts.chart('container',{
 
 				chart.series[0].data.forEach((p)=> {
 					if(checkCoord(p.x,xMin,xMax) && checkCoord(p.y, yMin, yMax)){
-
-						console.log(p);
-
 						if(highestPoints[0] == null || p.y == highestPoints[0].y){
 							highestPoints.push(p);
 						}else if(p.y > highestPoints[0].y)
@@ -47,10 +42,7 @@ Highcharts.chart('container',{
 		
 				chart.label = ren.label('visible points: ' + pCount, chart.xAxis[0].pos, chart.spacingBox.height).add();
 				
-				//use the index of the point to get the position of the corresponding tick-label
-				//do it for y as well, the right y-tick line and a proper offset
 				highestPoints.forEach(p => {
-
 					chart.highestLabels.push(ren.label(
 						p.y + '', 
 						p.plotX + chart.xAxis[0].left - 11,
@@ -59,7 +51,7 @@ Highcharts.chart('container',{
 					.attr({aligh:'right'})
 					.css({color:'red'}));
 
-					chart.dots.push(ren.circle(p.plotX + chart.xAxis[0].left,chart.xAxis[0].height + 52,4).attr({align:'center'}).css({color:'red'}));
+					chart.dots.push(ren.circle(p.plotX + chart.xAxis[0].left-1,chart.xAxis[0].height + 53,4).attr({align:'right'}).css({color:'red'}));
 				});
 				
 				chart.highestLabels.forEach(l => l.add());
