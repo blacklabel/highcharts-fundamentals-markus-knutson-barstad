@@ -1,15 +1,17 @@
 const dataMaker = () => Array.from(Array(100)).map(()=>Math.floor(Math.random()* 100)); //build ints
+
 const checkCoord = (n,min,max) => n >= min && n <= max;
+
 const clearScreen = (toClean) => {
 	if(toClean){
 		Array.from(toClean).forEach(c => c.destroy());
 	}
 }
+
 Highcharts.chart('container',{
 	chart: {
 		type: 'line',
 		zoomType: 'xy',
-
 		events: {
 			render: function () {
 				const chart = this;
