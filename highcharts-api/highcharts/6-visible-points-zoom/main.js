@@ -45,18 +45,29 @@ Highcharts.chart('container',{
 				chart.label = ren.label('visible points: ' + pCount, chart.xAxis[0].pos, chart.spacingBox.height).add();
 				
 				highestPoints.forEach(p => {
-					chart.highestLabels.push(ren.label(
-						p.y + '', 
-						p.plotX + chart.xAxis[0].left - 11,
-						p.plotY + p.series.itemHeight
-					)
-					.attr({aligh:'right'})
-					.css({color:'red'}));
-
-					chart.dots.push(ren.circle(p.plotX + chart.xAxis[0].left-1,chart.xAxis[0].height + 53,4).attr({align:'right'}).css({color:'red'}));
+					//building red labels
+					chart.highestLabels.push(
+						ren.label(
+							p.y + '', 
+							p.plotX + chart.xAxis[0].left - 11,
+							p.plotY + p.series.itemHeight
+						)
+						.attr({aligh:'right'})
+						.css({color:'red'})
+					);
+					
+					//building red dots
+					chart.dots.push(
+						ren.circle(
+							p.plotX + chart.xAxis[0].left-1,
+							chart.xAxis[0].height + 53,
+							4)
+						.attr({align:'right'})
+						.css({color:'red'})
+					);
 				});
 				
-				chart.highestLabels.forEach(l => l.add());
+				chart.highestLabels.forEach(l => l.add().toFront());
 				chart.dots.forEach(d => d.add().toFront());
 			}
 		}
