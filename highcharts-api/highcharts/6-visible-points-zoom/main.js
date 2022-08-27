@@ -1,4 +1,4 @@
-const dataMaker = () => Array.from(Array(100)).map(()=>Math.floor(Math.random()* 100)); //build ints
+const dataMaker = () => Array.from(Array(100)).map(() => Math.floor(Math.random() * 100));
 
 const checkCoord = (n,min,max) => n >= min && n <= max;
 
