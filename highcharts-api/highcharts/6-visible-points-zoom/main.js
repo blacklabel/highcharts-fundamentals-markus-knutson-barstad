@@ -19,7 +19,7 @@ Highcharts.chart('container',{
 				const xMin = chart.xAxis[0].min;
 				const xMax = chart.xAxis[0].max;
 				const yMin = chart.yAxis[0].min;
-				const yMax = chart.yAxis[0].max;	
+				const yMax = chart.yAxis[0].max;
 				let pCount = 0;
 				let highestPoints = [];
 
