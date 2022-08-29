@@ -4,7 +4,9 @@ const checkCoord = (n, min, max) => n >= min && n <= max;
 
 const clearScreen = (toClear) => {
   if (toClear) {
-    Array.isArray(toClear) ? toClear.forEach(c => c.destroy()) : toClear.destroy();
+    Array.isArray(toClear) 
+    ? toClear.forEach(c => c.destroy()) 
+    : toClear.destroy();
   }
 }
 
