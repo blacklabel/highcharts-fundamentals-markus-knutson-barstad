@@ -4,7 +4,7 @@ const checkCoord = (n, min, max) => n >= min && n <= max;
 
 const destroyArr = (arr) => arr.forEach(obj => obj.destroy());
 
-const clearScreen = (toClear) => typeof toClear !== undefined && (Array.isArray(toClear) ? destroyArr(toClear) : toClear.destroy());
+const clearScreen = (toClear) => toClear && (Array.isArray(toClear) ? destroyArr(toClear) : toClear.destroy());
 
 Highcharts.chart('container', {
   chart: {
