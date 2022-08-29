@@ -2,13 +2,9 @@ const dataMaker = () => Array.from(Array(100)).map(() => Math.floor(Math.random(
 
 const checkCoord = (n, min, max) => n >= min && n <= max;
 
-const clearScreen = (toClear) => {
-  if (toClear) {
-    Array.isArray(toClear) 
-    ? toClear.forEach(c => c.destroy()) 
-    : toClear.destroy();
-  }
-}
+const destroyArr = (arr) => arr.forEach(obj => obj.destroy());
+
+const clearScreen = (toClear) => typeof toClear !== undefined && (Array.isArray(toClear) ? destroyArr(toClear) : toClear.destroy());
 
 Highcharts.chart('container', {
   chart: {
@@ -86,4 +82,3 @@ Highcharts.chart('container', {
     data: dataMaker()
   }]
 });
-
