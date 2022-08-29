@@ -29,9 +29,6 @@ const clearScreen = (toClear) => {
 }
 
 Highcharts.chart('container', {
-  accessibility: {
-    enabled: false
-  },
 
   chart: {
     type: 'bar',
