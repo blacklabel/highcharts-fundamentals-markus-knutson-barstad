@@ -76,12 +76,12 @@ Highcharts.chart('container', {
     lineWidth: 0,
     lineColor: 'transparent',
     tickWidth:0,
-    left: "50%",
+    left: '50%',
 
     labels: {
-      align:"left",
+      align:'left',
       formatter: function () {
-        return "Dep" + (5 - this.pos);
+        return 'Dep' + (5 - this.pos);
       }
     }
   }],
