@@ -14,7 +14,6 @@ const BG_PROPS = {
 };
 
 const YAXIS_PROPS = {
-  tickPositions: [0,20,40,60,80,100], 
   width: '40%',
   max: 100,
   title: {
@@ -33,28 +32,19 @@ Highcharts.chart('container', {
   chart: {
     type: 'bar',
     marginTop: 50,
+    
     events: {
       render: function() {
         //clearing
         const chart = this;
         const ren = chart.renderer;
         const secondYAxis = chart.yAxis[1];
+
         clearScreen(chart.customAxisTitles);
-        clearScreen(chart.customHiderLine);
+        clearScreen(chart.customLabels);
+        
         chart.customAxisTitles = [];
         chart.customLabels = [];
-
-        //hiderline
-        chart.customHiderLine = ren.path([
-            'M', secondYAxis.pos + secondYAxis.width, chart.xAxis[0].pos,
-            'L', secondYAxis.pos + secondYAxis.width, chart.xAxis[0].pos + chart.yAxis[0].height
-        ])
-        .attr({
-          'stroke-width': 5,
-          stroke: '#FFFFFF'
-        })
-        .add()
-        .toFront();
 
         //custom titles
         ['Manegerial positions', 'Non manegerial positions'].forEach((title, index) => {
@@ -87,6 +77,7 @@ Highcharts.chart('container', {
     lineColor: 'transparent',
     tickWidth:0,
     left: "50%",
+
     labels: {
       align:"left",
       formatter: function () {
@@ -96,13 +87,16 @@ Highcharts.chart('container', {
   }],
 
   yAxis: [{
+      tickPositions: [0,20,40,60,80,100], 
       left: '0%',
       reversed: true,
       ...YAXIS_PROPS
     },
-    {  
+    { 
+      tickPositions: [0,20,40,60,80],  
       left: '60%',
-      showLastLabel: false,
+      endOnTick: false,
+      showLastLabel: true,
       offset: 0,
       ...YAXIS_PROPS
     },
