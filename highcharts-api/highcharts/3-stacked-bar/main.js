@@ -19,7 +19,12 @@ Highcharts.chart('container', {
       render: function () {
         const chart = this;
         const ticks = Object.values(chart.xAxis[0].ticks).slice(0,-1);
-        const rightLabelX = chart.yAxis[0].ticks[400].label.xy['x'];
+        
+        const rightLabelX = chart.yAxis[0].ticks[400].label.xy['x']; // x-position for the labels on the right
+        const topLabelY = 20; //y-position for the labels at the top
+        const fixLabelYOffset = chart.series[0].data[0].dataLabel.alignAttr.y -2; //to center the howToFix-Labels better
+
+        console.log(chart.series[0].data[0]);
 
         clearScreen(chart.issueLabel);
         clearScreen(chart.fixLabels);
@@ -35,21 +40,21 @@ Highcharts.chart('container', {
           chart.renderer, 
           'Issue',
           0,
-          20
+          topLabelY
           );
 
         chart.recordLabel = makeLabel(
           chart.renderer, 
           'Record Count',
           chart.yAxis[0].ticks[0].label.xy['x'],
-          20
+          topLabelY
           );
 
         chart.actionLabel = makeLabel(
           chart.renderer, 
           'Action', 
           rightLabelX,
-          20
+          topLabelY
           );
 
         ticks.forEach((tick, index) => {  
@@ -57,12 +62,13 @@ Highcharts.chart('container', {
             chart.renderer.label(
                 'How to fix',
                 rightLabelX,
-                tick.label.xy['y'] - ((Math.round(chart.series[0].data[0].shapeArgs.width) / 2)) - (index % 2 == 0 ? 3 : 4)
+                tick.label.xy['y'] - fixLabelYOffset, //this just
               )
               .attr({
                 align:'left',
                 stroke: 'blue',
                 'stroke-width':5,
+
                 padding:12
               })
               .add()
@@ -81,7 +87,8 @@ Highcharts.chart('container', {
     categories: ['data', 'emails', 'duplicates', 'support'],
     gridLineWidth: 1,
     lineWidth: 0,
-    left:'5%'
+    left:'5%',
+    width:'60%'
   },
 
   yAxis: {
