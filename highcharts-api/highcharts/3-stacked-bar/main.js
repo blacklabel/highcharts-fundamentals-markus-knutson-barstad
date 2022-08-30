@@ -1,10 +1,24 @@
-const destroyArr = (arr) => arr.forEach(obj => obj.destroy());
+class labelFactory {
+  constructor(ren) {
+    this.factoryRen = ren;
+  };
 
-const destroyObjects = (obj) => Array.isArray(obj) ? destroyArr(obj) : obj.destroy();
+  makeLabel(text, xPos, yPos, attr) {
+    return this.factoryRen
+      .label(text, xPos, yPos)
+      .attr({...attr})
+      .add()
+      .toFront();
+  }
 
-const clearScreen = (toClear) => toClear && destroyObjects(toClear);
+  destroyLabels (toDestroy) {
+    Array.isArray(toDestroy) ? toDestroy.forEach(l => l.destroy()) : toDestroy.destroy();
+  };
 
-const makeLabel = (ren, text, xPos, yPos) => ren.label(text, xPos, yPos).attr({align:'left'}).add().toFront();
+  destroyExisting(labels) {
+    labels && this.destroyLabels(labels)
+  };
+}
 
 Highcharts.chart('container', {
   title: {
@@ -16,68 +30,42 @@ Highcharts.chart('container', {
     margin: 50,
 
     events: {
-      render: function () {
+      render: function() {
         const chart = this;
-        const ticks = Object.values(chart.xAxis[0].ticks).slice(0,-1);
-        
-        const rightLabelX = chart.yAxis[0].ticks[400].label.xy['x']; // x-position for the labels on the right
-        const topLabelY = 20; //y-position for the labels at the top
-        const fixLabelYOffset = chart.series[0].data[0].dataLabel.alignAttr.y -2; //to center the howToFix-Labels better
+        const factory = new labelFactory(chart.renderer);
 
-        console.log(chart.series[0].data[0]);
+        //label positions
+        const labelRight = chart.yAxis[0].ticks[350].label.xy['x'];
+        const labelTop = 20;
+        const labelRightOffset = chart.series[0].data[0].dataLabel.alignAttr.y - 2;
 
-        clearScreen(chart.issueLabel);
-        clearScreen(chart.fixLabels);
-        clearScreen(chart.actionLabel);
-        clearScreen(chart.recordLabel);
+        factory.destroyExisting(chart.issueLabel);
+        factory.destroyExisting(chart.actionLabel);
+        factory.destroyExisting(chart.recordLabel);
+        factory.destroyExisting(chart.fixLabels);
 
-        chart.issueLabel;
-        chart.recordLabel; 
-        chart.actionLabel;
+        chart.issueLabel = factory.makeLabel('Issue', 0, labelTop).add().toFront();
+        chart.recordLabel = factory.makeLabel('Record Count', chart.yAxis[0].ticks[0].label.xy['x'], labelTop).add().toFront();
+        chart.actionLabel = factory.makeLabel('Action', labelRight, labelTop).add().toFront();
         chart.fixLabels = [];
 
-        chart.issueLabel = makeLabel(
-          chart.renderer, 
-          'Issue',
-          0,
-          topLabelY
-          );
-
-        chart.recordLabel = makeLabel(
-          chart.renderer, 
-          'Record Count',
-          chart.yAxis[0].ticks[0].label.xy['x'],
-          topLabelY
-          );
-
-        chart.actionLabel = makeLabel(
-          chart.renderer, 
-          'Action', 
-          rightLabelX,
-          topLabelY
-          );
-
-        ticks.forEach((tick, index) => {  
+        Object.values(chart.xAxis[0].ticks).slice(0, -1).forEach((tick, index) => {
           chart.fixLabels.push(
-            chart.renderer.label(
-                'How to fix',
-                rightLabelX,
-                tick.label.xy['y'] - fixLabelYOffset,
-              )
-              .attr({
-                align:'left',
+            factory.makeLabel(
+              'How to fix',
+              labelRight,
+              tick.label.xy['y'] - labelRightOffset, {
+                align: 'left',
                 stroke: 'blue',
-                'stroke-width':5,
-
-                padding:12
-              })
-              .add()
-              .toFront()
-            );
+                'stroke-width': 3,
+                padding: 12
+              }
+            )
+          )
         });
       }
     }
-},
+  },
 
   xAxis: {
     labels: {
@@ -87,15 +75,16 @@ Highcharts.chart('container', {
     categories: ['data', 'emails', 'duplicates', 'support'],
     gridLineWidth: 1,
     lineWidth: 0,
-    left:'5%',
-    width:'60%'
+    margin: 50,
+    left: '5%',
+    width: '60%'
   },
 
   yAxis: {
-    tickPositions: [0,50,100,150,200,250,300,350,400],
+    tickPositions: [0, 50, 100, 150, 200, 250, 300, 350, 400],
     gridLineWidth: 0,
-    width:'60%',
-    left:'5%',
+    width: '60%',
+    left: '5%',
     title: {
       text: 'Amount'
     }
@@ -110,16 +99,13 @@ Highcharts.chart('container', {
   },
 
   series: [{
-      data: [0,0,0,0],
+      color: '#F9D949',
+      data: [20, 0, 20, 10],
       dataLabels: {
         inside: false,
         enabled: true,
         format: '{total}K'
       }
-    },
-    {
-      color: '#F9D949',
-      data: [20, 0, 20, 10]
     },
     {
       color: '#B99C45',
@@ -134,5 +120,4 @@ Highcharts.chart('container', {
       data: [20, 0, 15, 10]
     }
   ],
-
 });
