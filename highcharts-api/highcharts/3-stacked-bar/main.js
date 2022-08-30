@@ -1,18 +1,12 @@
-/*
-  A few notes about the "How to solve"-annotation-labels:
-    - On this task i intentionally created a series which only holds value pairs of unique IDs and the value '0'
-    - I then create annotations with points which refer to the ID of these pairs.
-    - Since the values in this specific series is the same, the x-positions of the annotations will stay the same across all the 
-    - the Y-values of the annotations is derived from the series so that a given annotations position corresponds to a series position
+const destroyArr = (arr) => arr.forEach(obj => obj.destroy());
 
-  Question:
-    - would it be possible to solve this without the "dummy"-series? tying points to the axes maybe?
-    - How much "magic numbers" is okay? is there a clear guideline here?
-    - Should I refactor the labels
-*/
+const destroyObjects = (obj) => Array.isArray(obj) ? destroyArr(obj) : obj.destroy();
+
+const clearScreen = (toClear) => toClear && destroyObjects(toClear);
+
+const makeLabel = (ren, text, xPos, yPos) => ren.label(text, xPos, yPos).attr({align:"left"}).add().toFront();
 
 Highcharts.chart('container', {
-  accesiblity: false,
 
   title: {
     text: ''
@@ -20,34 +14,85 @@ Highcharts.chart('container', {
 
   chart: {
     type: 'bar',
-    width: 800,
-    height: 600,
-    margin: 160
+    margin: 50,
 
-  },
+    events: {
+      render: function () {
+        const chart = this;
+        const ticks = Object.values(chart.xAxis[0].ticks).slice(0,-1);
+        const rightLabelX = chart.yAxis[0].ticks[400].label.xy["x"];
+
+        clearScreen(chart.issueLabel);
+        clearScreen(chart.fixLabels);
+        clearScreen(chart.actionLabel);
+        clearScreen(chart.recordLabel);
+
+
+        chart.issueLabel;
+        chart.recordLabel; 
+        chart.actionLabel;
+        chart.fixLabels = [];
+
+        chart.issueLabel = makeLabel(
+          chart.renderer, 
+          "Issue",
+          0,
+          20,
+          );
+
+        chart.recordLabel = makeLabel(
+          chart.renderer, 
+          "Record Count",
+          chart.yAxis[0].ticks[0].label.xy["x"],
+          20,
+          );
+
+        chart.actionLabel = makeLabel(
+          chart.renderer, 
+          "Action", 
+          rightLabelX,
+          20
+          );
+
+        ticks.forEach((tick, index) => {  
+          chart.fixLabels.push(
+            chart.renderer.label(
+                "How to fix",
+                rightLabelX,
+                tick.label.xy["y"] - ((Math.round(chart.series[0].data[0].shapeArgs.width) / 2)) - (index % 2 == 0 ? 3 : 4),
+              )
+              .attr({
+                align:"left",
+                stroke: "blue",
+                "stroke-width":5,
+                padding:12,
+              })
+              .add()
+              .toFront()
+            );
+        });
+      }
+
+    }
+},
+
 
   xAxis: {
-    width: 600,
-
     labels: {
       align: "right",
     },
 
-    left: 60,
-    offset: -100,
     categories: ['data', 'emails', 'duplicates', 'support'],
     gridLineWidth: 1,
-    lineWidth: 0
-
+    lineWidth: 0,
+    left:"5%",
   },
 
   yAxis: {
-
+    tickPositions: [0,50,100,150,200,250,300,350,400],
     gridLineWidth: 0,
-    tickLength: 60,
-    tickInterval: 50,
-    tickAmount: 9,
-
+    width:"60%",
+    left:"5%",
     title: {
       text: 'Amount'
     }
@@ -104,103 +149,4 @@ Highcharts.chart('container', {
     }
   ],
 
-  annotations: [{
-    dragable: true,
-    labels: [{
-        align: 'right',
-        point: {
-          x: 13,
-          y: -48
-        },
-        verticalAlign: 'bottom',
-        text: 'Issue',
-        backgroundColor: "transparent",
-        borderColor: "transparent",
-
-        overflow: "none",
-        crop: false
-      },
-      {
-        //align: 'left',
-        point: {
-          x: -12,
-          y: 0
-        },
-        verticalAlign: 'bottom',
-        text: 'Record count',
-        backgroundColor: "transparent",
-        borderColor: "transparent"
-      },
-
-      {
-        align: 'left',
-        point: {
-          x: -12,
-          y: 390
-        },
-        verticalAlign: 'bottom',
-        text: 'Action',
-        backgroundColor: "transparent",
-        borderColor: "transparent"
-      },
-
-      //how to solve's
-      {
-        align: 'right',
-        point: '0',
-        x: 600,
-        text: 'How to solve',
-
-        backgroundColor: 'transparent',
-        shape: 'rect',
-        verticalAlign: 'top',
-        borderColor: 'blue',
-        borderWidth: 2
-      },
-      {
-        align: 'right',
-        point: '1',
-        x: 600,
-        text: 'How to solve',
-
-        backgroundColor: 'transparent',
-        shape: 'rect',
-        verticalAlign: 'top',
-        borderColor: 'blue',
-        borderWidth: 2
-      },
-      {
-        align: 'right',
-        point: '2',
-        x: 600,
-        text: 'How to solve',
-
-        backgroundColor: 'transparent',
-        shape: 'rect',
-        verticalAlign: 'top',
-        borderColor: 'blue',
-        borderWidth: 2
-      },
-      {
-        align: 'right',
-        point: '3',
-        x: 600,
-        text: 'How to solve',
-
-        backgroundColor: 'transparent',
-        shape: 'rect',
-        verticalAlign: 'top',
-        borderColor: 'blue',
-        borderWidth: 2
-      }
-    ],
-
-    labelOptions: {
-      allowOverlap: true,
-
-      style: {
-        fontSize: '13px'
-      }
-    }
-  }]
 });
