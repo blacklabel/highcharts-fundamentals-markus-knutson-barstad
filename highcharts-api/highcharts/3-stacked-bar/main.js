@@ -62,7 +62,7 @@ Highcharts.chart('container', {
             chart.renderer.label(
                 'How to fix',
                 rightLabelX,
-                tick.label.xy['y'] - fixLabelYOffset, //this just
+                tick.label.xy['y'] - fixLabelYOffset,
               )
               .attr({
                 align:'left',
