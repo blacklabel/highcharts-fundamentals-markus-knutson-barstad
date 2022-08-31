@@ -1,26 +1,16 @@
 
-const buildColors = (exclude) => ["red","green","blue","yellow"].filter(c => c !== exclude);
+const buildColors = (exclude) => ['red','green','blue','yellow'].filter(c => c !== exclude);
 
 const randCol = (exclude) => Array.from(buildColors(exclude))[Math.floor(Math.random() * 3)];
-
-// const collides = (first, second) => first.radius + second.radius <= Math.hypot(first.plotX - second.plotX, first.plotY - second.plotY);
-// function circleIntersect(x0, y0, r0, x1, y1, r1) {
-//     return Math.hypot(x0 - x1, y0 - y1) <= r0 + r1;
-// }
-//const getCoord = radius * Math.cos(Math.PI * 2 * angle / 360);
 
 const getXlen = (p) => p.plotX + p.marker.width;
 const getYlen = (p) => p.plotY + p.marker.height;
 
-function is_collide( 
-    minAx, minAy, maxAx, maxAy,
-    minBx, minBy, maxBx, maxBy ) {
-    const aLeftOfB = maxAx < minBx;
-    const aRightOfB = minAx > maxBx;
-    const aAboveB = minAy > maxBy;
-    const aBelowB = maxAy < minBy;
-
-    return !( aLeftOfB || aRightOfB || aAboveB || aBelowB );
+function intersectRect(r1, r2) {
+  return !(r2.left > r1.right || 
+           r2.right < r1.left || 
+           r2.top > r1.bottom ||
+           r2.bottom < r1.top);
 }
 
 const c = Highcharts.chart('container2', {
@@ -49,8 +39,8 @@ const c = Highcharts.chart('container2', {
 	series: [
 		{
         	data: [
-        		{value: 50, color:"red"}, 
-        		{value: 12, color:"blue"},
+        		{value: 50, color:'red'}, 
+        		{value: 12, color:'blue'},
         	],
 
         	point: {
@@ -66,28 +56,33 @@ const c = Highcharts.chart('container2', {
 
 
 const runLoop = () => {
-	c.series[0].data.forEach(pInQuestion => {
+	c.series[0].data.forEach(mainP => {
 
-		c.series[0].data.filter(p => p.value !== pInQuestion.value).forEach(p => {
+		c.series[0].data.filter(p => p.value !== mainP.value).forEach(subP => {
 			
-			const x1Start = pInQuestion.plotX;
-			const x1End = getXlen(pInQuestion);
-			const y1Start = pInQuestion.plotY;
-			const y1End = getYlen(pInQuestion);
+			const x1Start = mainP.plotX;
+			const x1End = getXlen(mainP);
+			const y1Start = mainP.plotY;
+			const y1End = getYlen(mainP);
 
-			const x2Start = p.plotX;
-			const x2End = getXlen(p);
-			const y2Start = p.plotY;
-			const y2End = getYlen(p);
-			
-
-			if(is_collide(
-				x1Start, y1Start, x1End, y1End, 
-				x2Start, y2Start, x2End, y2End, 
-				)){
-				console.log("WOAOOWA");
+			const r1 = {
+				left: mainP.plotX + c.plotLeft,
+				right: getXlen(mainP) + c.plotLeft,
+				top: mainP.plotY + c.plotTop,
+				bottom: getYlen(mainP) + c.plotTop,
 			}
-			
+
+			const r2 = {
+				left: subP.plotX + c.plotLeft,
+				right: getXlen(subP) + c.plotLeft,
+				top: subP.plotY + c.plotTop,
+				bottom: getYlen(subP) + c.plotTop,
+			}
+
+			if(intersectRect(r1,r2)){
+				console.log("awdawd");
+			}
+
 		});
 	})	
 }
