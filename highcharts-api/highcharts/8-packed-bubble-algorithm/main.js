@@ -1,92 +1,111 @@
+const debugPoint = (point) => {
+	console.log("!~![DEBUG POINT]!~!");
+	
+	console.log(point.plotX);
+	console.log(point.plotY);
+	console.log("######");
+
+	console.log("plotX: " + point.plotX);
+	console.log("plotY " + point.plotY);
+	console.log("######");
+	
+	console.log(point);
+	console.log("+---------------------------------------+\n");
+};
+
+const debugAllPoints = () => c.series[0].data.forEach(p => debugPoint(p));
+
+/*================================================*/
 
 const buildColors = (exclude) => ['red','green','blue','yellow'].filter(c => c !== exclude);
 
 const randCol = (exclude) => Array.from(buildColors(exclude))[Math.floor(Math.random() * 3)];
 
-const getXlen = (p) => p.plotX + p.marker.width;
-const getYlen = (p) => p.plotY + p.marker.height;
+const within = (r1,r2) => !(r1.start < r2.end && r2.start > r1.end);
 
-function intersectRect(r1, r2) {
-  return !(r2.left > r1.right || 
-           r2.right < r1.left || 
-           r2.top > r1.bottom ||
-           r2.bottom < r1.top);
+
+// math-stuff https://www.geeksforgeeks.org/check-two-given-circles-touch-intersect/
+const squared = (n) => Math.pow(n,2);
+
+const distance = (c1, c2) => Math.sqrt(squared(c1.x - c2.x) + squared(c1.y, c2.y));
+
+const overlaps = (c1, c2) => (distance(c1,c2) < c1.r + c2.r);
+
+const circleObj = (x, y, r) => {
+	return {
+		x:x,
+		y:y,
+		r:r,
+	}
 }
 
 const c = Highcharts.chart('container2', {
-    chart: {
-        type: 'packedbubble',
-    	
-    },
+        chart: {
+	        type: 'packedbubble',
+	        margin:0,
+	        spacing:0,
 
- 	tooltip: {
- 		enabled: false
- 	},
-	
-	legend: {
-		enabled: false,
-	},
+	        events: {
+	        	renderer: {
 
-    plotOptions: {
-    	packedbubble: {
-     	   layoutAlgorithm: {
-				splitSeries: false,
-				dragBetweenSeries: true,
-     	   }
-    	}
-	},
+	        	}
+	        }
+         },
+        tooltip: {
+            enabled: false
+        },
+        legend: {
+            enabled: false,
+        },
+        plotOptions: {
+            packedbubble: {
+                layoutAlgorithm: {
+                    splitSeries: false,
+                    dragBetweenSeries: true,
+                },
 
-	series: [
-		{
-        	data: [
-        		{value: 50, color:'red'}, 
-        		{value: 12, color:'blue'},
-        	],
+          		animation: false
+            }
+        },
+        series: [{
+            animation: false,
+            data: [
+                {value: 50, color:'red'},
+                {value: 12, color:'blue'},
+                ],
 
-        	point: {
-        		events: {
-        			update: event => {
-        				this.color = event.options;
-        			}
-        		}
-        	},
-    	}
-    ],
+            point: {
+                events: {
+                    update: event => {
+                            this.color = event.options;
+                        }
+                }
+            },
+        }],
 });
 
-
 const runLoop = () => {
-	c.series[0].data.forEach(mainP => {
+        c.series[0].data.forEach(mainP => {
+						const mainC = circleObj(
+							mainP.plotX + c.plotLeft,	//X1
+							mainP.plotY + c.plotTop,	//Y1
+							mainP.radius				//R1
+						);
 
-		c.series[0].data.filter(p => p.value !== mainP.value).forEach(subP => {
-			
-			const x1Start = mainP.plotX;
-			const x1End = getXlen(mainP);
-			const y1Start = mainP.plotY;
-			const y1End = getYlen(mainP);
-
-			const r1 = {
-				left: mainP.plotX + c.plotLeft,
-				right: getXlen(mainP) + c.plotLeft,
-				top: mainP.plotY + c.plotTop,
-				bottom: getYlen(mainP) + c.plotTop,
-			}
-
-			const r2 = {
-				left: subP.plotX + c.plotLeft,
-				right: getXlen(subP) + c.plotLeft,
-				top: subP.plotY + c.plotTop,
-				bottom: getYlen(subP) + c.plotTop,
-			}
-
-			if(intersectRect(r1,r2)){
-				console.log("awdawd");
-			}
-
-		});
-	})	
+                c.series[0].data.filter(p => p.value !== mainP.value).forEach(subP => {
+                    	const subC = circleObj(
+							suP.plotX + c.plotLeft,		//X2
+							suP.plotY + c.plotTop,		//Y2
+                    		subP.radius					//R2
+                    	);
+                    	
+                    	if(overlaps(mainC,subC)){
+                    		mainP.update({
+                    			color:randCol(mainP.color)
+                    		});
+                    	}
+                });
+        });
 }
 
-setInterval(runLoop, 100);
-
-c.series[0].data[0].update({color:randCol(c.series[0].data[0].color)});
+setInterval(debugAllPoints, 1000);
