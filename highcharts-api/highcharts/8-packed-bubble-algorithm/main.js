@@ -1,3 +1,15 @@
+
+/*
+	TODO:
+		splitSeries must be true to see the parentNode (i think)
+		so we need more series
+
+		then we need to check if there is an update function
+		and find a parent-nodes x, y and radius
+
+		maybe try to hide the original bubbles
+*/
+
 const buildColors = (exclude) => ['red','green','blue','yellow'].filter(c => c !== exclude);
 
 const randCol = (exclude) => Array.from(buildColors(exclude))[Math.floor(Math.random() * 3)];
@@ -32,6 +44,13 @@ const c = Highcharts.chart('container2', {
         chart: {
 	        type: 'packedbubble',
 	        margin:0,
+	        events: {
+	        	render: function(){
+	        		this.series[0].data.forEach(p => {
+	        			console.log(p);
+	        		})
+	        	}
+	        }
         },
         
         tooltip: {
@@ -41,16 +60,24 @@ const c = Highcharts.chart('container2', {
         legend: {
             enabled: false,
         },
-        
+
         plotOptions: {
             packedbubble: {
                 layoutAlgorithm: {
                     splitSeries: false,
-                    dragBetweenSeries: true,
                     friction: -0.995, // some constants altered just for displaying and testing
                     gravitationalConstant:0.025,
-                    bubblePadding: 2,
-
+                    bubblePadding: 0,
+                    // parentNodeLimit:true,
+                    // parentNodeOptions:{
+                    // 	marker: {
+                    // 		enabled:true,
+                    // 		fillColor: "black",
+                    // 		lineColor: "red",
+                    // 		lineWidth: 10,
+                    // 		radius:100,
+                    // 	}
+                    // }
                 },
             }
         },
@@ -80,9 +107,7 @@ const bubbles = c.series[0].data;
 
 const runLoop = () => {
     bubbles.forEach(mainB => {
-
         otherBubbles(mainB,bubbles).forEach(otherB => {
-        	console.log(otherB);
         	if(bubblesTouching(otherB,mainB)){        		
         		otherB.update({
         			color:randCol(otherB.color)
