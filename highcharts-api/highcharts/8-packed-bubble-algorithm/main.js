@@ -1,35 +1,12 @@
-const debugPoint = (point) => {
-	console.log("!~![DEBUG POINT]!~!");
-	
-	console.log(point.plotX);
-	console.log(point.plotY);
-	console.log("######");
-
-	console.log("plotX: " + point.plotX);
-	console.log("plotY " + point.plotY);
-	console.log("######");
-	
-	console.log(point);
-	console.log("+---------------------------------------+\n");
-};
-
-const debugAllPoints = () => c.series[0].data.forEach(p => debugPoint(p));
-
-/*================================================*/
-
 const buildColors = (exclude) => ['red','green','blue','yellow'].filter(c => c !== exclude);
 
 const randCol = (exclude) => Array.from(buildColors(exclude))[Math.floor(Math.random() * 3)];
 
-const within = (r1,r2) => !(r1.start < r2.end && r2.start > r1.end);
-
-
-// math-stuff https://www.geeksforgeeks.org/check-two-given-circles-touch-intersect/
 const squared = (n) => Math.pow(n,2);
 
-const distance = (c1, c2) => Math.sqrt(squared(c1.x - c2.x) + squared(c1.y, c2.y));
+const radiiDistance = (c1, c2) => Math.sqrt(squared(c1.x - c2.x) + squared(c1.y - c2.y));
 
-const overlaps = (c1, c2) => (distance(c1,c2) < c1.r + c2.r);
+const collides = (c1, c2) => (radiiDistance(c1,c2) < c1.r + c2.r);
 
 const circleObj = (x, y, r) => {
 	return {
@@ -39,73 +16,80 @@ const circleObj = (x, y, r) => {
 	}
 }
 
+const circleFromPoint = (p) => {
+	return circleObj(
+			p.graphic.x + p.radius,		//X1
+			p.graphic.y + p.radius * 2,	//Y1
+			p.radius					//R1
+		);
+}
+
+const bubblesTouching = (mainB, otherB) => collides(circleFromPoint(mainB),circleFromPoint(otherB));
+
+const otherBubbles = (toFilter, bubbles) => bubbles.filter(b => b.value !== toFilter.value)
+
 const c = Highcharts.chart('container2', {
         chart: {
 	        type: 'packedbubble',
 	        margin:0,
-	        spacing:0,
-
-	        events: {
-	        	renderer: {
-
-	        	}
-	        }
-         },
+        },
+        
         tooltip: {
             enabled: false
         },
+
         legend: {
             enabled: false,
         },
+        
         plotOptions: {
             packedbubble: {
                 layoutAlgorithm: {
                     splitSeries: false,
                     dragBetweenSeries: true,
-                },
+                    friction: -0.995, // some constants altered just for displaying and testing
+                    gravitationalConstant:0.025,
+                    bubblePadding: 2,
 
-          		animation: false
+                },
             }
         },
+
+        /* 
+        	i had a better time making the bubbles "notice eachother" when putting the larger values first,
+        	but it seems like layoutAlgorithm-constants might be a if not the deciding factor
+        */
         series: [{
-            animation: false,
             data: [
-                {value: 50, color:'red'},
+                {value: 150, color:'red'},
+                {value: 105, color:'green'},
                 {value: 12, color:'blue'},
                 ],
-
+            
             point: {
                 events: {
                     update: event => {
-                            this.color = event.options;
-                        }
+                        this.color = event.options;
+                    }
                 }
             },
         }],
 });
 
-const runLoop = () => {
-        c.series[0].data.forEach(mainP => {
-						const mainC = circleObj(
-							mainP.plotX + c.plotLeft,	//X1
-							mainP.plotY + c.plotTop,	//Y1
-							mainP.radius				//R1
-						);
+const bubbles = c.series[0].data;
 
-                c.series[0].data.filter(p => p.value !== mainP.value).forEach(subP => {
-                    	const subC = circleObj(
-							suP.plotX + c.plotLeft,		//X2
-							suP.plotY + c.plotTop,		//Y2
-                    		subP.radius					//R2
-                    	);
-                    	
-                    	if(overlaps(mainC,subC)){
-                    		mainP.update({
-                    			color:randCol(mainP.color)
-                    		});
-                    	}
-                });
+const runLoop = () => {
+    bubbles.forEach(mainB => {
+
+        otherBubbles(mainB,bubbles).forEach(otherB => {
+        	console.log(otherB);
+        	if(bubblesTouching(otherB,mainB)){        		
+        		otherB.update({
+        			color:randCol(otherB.color)
+        		});
+        	}
         });
+    });
 }
 
-setInterval(debugAllPoints, 1000);
+setInterval(runLoop, 144);
