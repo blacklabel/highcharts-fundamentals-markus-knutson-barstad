@@ -1,11 +1,12 @@
-/*
-	+-----------------------------------------------+
-	|							 					|
-	|	Explanation and thoughts for this exercise	|
-	|												|
-	+-----------------------------------------------+
 
-	First of all this might be quite a hacky solution x)
+/*
+	+-----------+
+	| 			|
+	|	PART 3	|
+	|			|
+	+-----------+
+
+	First of all this might be quite a hacky solution. 
 	It does not perfectly always trigger a color-change, and sometimes it triggers too many.
 	My guess is that it is somewhat incorrect, but hopefully fun to read, it was fun to write! (^_^)
 
@@ -54,7 +55,7 @@ const algBuilder = (color) => {
 	return {
         splitSeries: true,
         bubblePadding: -2,
-        friction: -0.999,
+        friction: -0.999, // some constants altered just for displaying and testing
         gravitationalConstant:0.015,
         parentNodeOptions:{
         	marker:{
@@ -108,4 +109,4 @@ const runLoop = () => {
 	});	
 }
 
-setInterval(runLoop, 130);
+setInterval(runLoop, 60);
