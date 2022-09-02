@@ -1,11 +1,5 @@
 
 /*
- *
- *	749, 237, POS of the top right parent
- *	to find: series[0].parentNode.plotX
- *	to find: series[0].parentNode.plotY + series[0].parentNode.radius
- *
- *
 	TODO:
 		splitSeries must be true to see the parentNode (i think)
 		so we need more series
@@ -46,29 +40,6 @@ const bubblesTouching = (mainB, otherB) => collides(circleFromPoint(mainB),circl
 
 const otherBubbles = (toFilter, bubbles) => bubbles.filter(b => b.value !== toFilter.value)
 
-const seriesConfig = {
-	color:"transparent",
-	layoutAlgorithm: {
-		splitSeries: true,
-		friction: -0.995, // some constants altered just for displaying and testing
-		gravitationalConstant:0.025,
-		bubblePadding: 0,
-		parentNodeLimit:true,
-		parentNodeOptions:{
-			marker: {
-				enabled:true,
-				fillColor: "black",
-			}
-		}
-	},
-	point: {
-		events: {
-			update: event => {
-				this.color = event.options;
-			}
-		}
-	}
-}
 const c = Highcharts.chart('container2', {
         chart: {
 	        type: 'packedbubble',
@@ -92,19 +63,21 @@ const c = Highcharts.chart('container2', {
 
         plotOptions: {
             packedbubble: {
-			color:"transparent",
-                	layoutAlgorithm: {
-                    splitSeries: true,
+                layoutAlgorithm: {
+                    splitSeries: false,
                     friction: -0.995, // some constants altered just for displaying and testing
                     gravitationalConstant:0.025,
                     bubblePadding: 0,
-                    parentNodeLimit:true,
-                    parentNodeOptions:{
-				marker: {
-                     		enabled:true,
-                     		fillColor: "black",
-                     	}
-                    }
+                    // parentNodeLimit:true,
+                    // parentNodeOptions:{
+                    // 	marker: {
+                    // 		enabled:true,
+                    // 		fillColor: "black",
+                    // 		lineColor: "red",
+                    // 		lineWidth: 10,
+                    // 		radius:100,
+                    // 	}
+                    // }
                 },
             }
         },
@@ -113,16 +86,22 @@ const c = Highcharts.chart('container2', {
         	i had a better time making the bubbles "notice eachother" when putting the larger values first,
         	but it seems like layoutAlgorithm-constants might be a if not the deciding factor
         */
-        series: [
-		  {data: [{value: 50}], ...seriesConfig},
-		  {data: [{value: 50}], ...seriesConfig},
-		  {data: [{value: 50}], ...seriesConfig},
-        ],
+        series: [{
+            data: [
+                {value: 150, color:'red'},
+                {value: 105, color:'green'},
+                {value: 12, color:'blue'},
+                ],
+            
+            point: {
+                events: {
+                    update: event => {
+                        this.color = event.options;
+                    }
+                }
+            },
+        }],
 });
-
-
-c.series.forEach(s => console.log(s));
-
 
 const bubbles = c.series[0].data;
 
