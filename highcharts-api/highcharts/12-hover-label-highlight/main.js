@@ -1,6 +1,9 @@
+let highlightedCategory = '';
+
 Highcharts.chart('container', {
     chart: {
-        type: 'column'
+        type: 'column',
+        animation: false
     },
     title: {
         text: ''
@@ -10,15 +13,12 @@ Highcharts.chart('container', {
     		point:{		
 		    	events:{
 		    		mouseOver: function(e){
-		    			const newCats = this.series.xAxis.categories;
-		    			newCats[this.index] = String('<span style="color: #EE4B2B;font-size:12px;font-weight:bold;">' + this.category + '</span>');
-		    			this.series.xAxis.update({categories: newCats});
+                        highlightedCategory = this.category;
+                        this.series.chart.redraw();
 		    		},
-		    		
 		    		mouseOut: function(e){
-		    			const newCats = this.series.xAxis.categories;
-		    			newCats[this.index] = newCats[this.index].split('>')[1].split('<')[0];
-		    			this.series.xAxis.update({categories: newCats});
+                        highlightedCategory = '';
+                        this.series.chart.redraw();
 		    		}
 		    	}
     		}
@@ -39,6 +39,15 @@ Highcharts.chart('container', {
             '2010',
             '2021'
         ],
+
+        labels: {
+            enabled:true,
+            formatter: function(){
+                return this.value === highlightedCategory 
+                ? '<span style="color: #EE4B2B;font-size:12px;font-weight:bold;">' + this.value + '</span>'
+                : this.value;
+            }
+        }
     },
     yAxis: {
         title: {
