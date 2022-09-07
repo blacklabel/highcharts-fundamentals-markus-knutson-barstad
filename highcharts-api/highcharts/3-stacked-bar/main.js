@@ -27,7 +27,7 @@ Highcharts.chart('container', {
 
   chart: {
     type: 'bar',
-    margin: 50,
+    marginTop: 50,
 
     events: {
       render: function() {
