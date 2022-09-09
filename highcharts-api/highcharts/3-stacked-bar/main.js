@@ -19,6 +19,14 @@ class labelFactory {
       .toFront();
   }
 
+  makeButton(text, xPos, yPos, attr) {
+    return this.factoryRen
+      .label(text, xPos, yPos)
+      .attr({...attr})
+      .add()
+      .toFront();
+  }
+
   destroyLabels (toDestroy) {
     Array.isArray(toDestroy) ? toDestroy.forEach(l => l.destroy()) : toDestroy.destroy();
   };
@@ -35,8 +43,11 @@ Highcharts.chart('container', {
 
   chart: {
     type: 'bar',
+<<<<<<< Updated upstream
 	margin:70,
 	
+=======
+>>>>>>> Stashed changes
     events: {
       render: function() {
         const chart = this;
@@ -51,9 +62,15 @@ Highcharts.chart('container', {
         factory.destroyExisting(chart.recordLabel);
         factory.destroyExisting(chart.fixLabels);
 
+<<<<<<< Updated upstream
         chart.issueLabel = factory.makeLabel('Issue', 0, 0);
         chart.recordLabel = factory.makeLabel('Record Count', chart.yAxis[0].ticks[0].label.xy.x, 0);
         chart.actionLabel = factory.makeLabel('Action', renderedRight, 0);
+=======
+        chart.issueLabel = factory.makeLabel('Issue', 0, 0).add().toFront();
+        chart.recordLabel = factory.makeLabel('Record Count', chart.yAxis[0].ticks[0].label.xy.x, 0).add().toFront();
+        chart.actionLabel = factory.makeLabel('Action', renderedRight, 0).add().toFront();
+>>>>>>> Stashed changes
         chart.fixLabels = [];
 
         Object.values(chart.xAxis[0].ticks).slice(0, -1).forEach((tick, index) => {
@@ -89,7 +106,8 @@ Highcharts.chart('container', {
     gridLineWidth: 0,
     title: {
       text: 'Amount'
-    }
+    },
+
   },
 
   plotOptions: {
