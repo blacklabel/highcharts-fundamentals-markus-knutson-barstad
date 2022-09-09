@@ -43,51 +43,48 @@ Highcharts.chart('container', {
 
   chart: {
     type: 'bar',
-<<<<<<< Updated upstream
-	margin:70,
+	 margin:65,
 	
-=======
->>>>>>> Stashed changes
+
     events: {
       render: function() {
         const chart = this;
         const factory = new labelFactory(chart.renderer);
 
         //label positions
-        const renderedRight = chart.yAxis[0].ticks[350].label.xy.x;
-        const renderedRightOffset = chart.series[0].data[0].dataLabel.alignAttr.y - 2;
+        const renderedRight = chart.chartWidth//chart.yAxis[0].ticks[350].label.xy.x;
+
+        const renderedRightOffset = chart.series[0].data[0].dataLabel.alignAttr.y;
 
         factory.destroyExisting(chart.issueLabel);
         factory.destroyExisting(chart.actionLabel);
         factory.destroyExisting(chart.recordLabel);
         factory.destroyExisting(chart.fixLabels);
 
-<<<<<<< Updated upstream
         chart.issueLabel = factory.makeLabel('Issue', 0, 0);
         chart.recordLabel = factory.makeLabel('Record Count', chart.yAxis[0].ticks[0].label.xy.x, 0);
-        chart.actionLabel = factory.makeLabel('Action', renderedRight, 0);
-=======
-        chart.issueLabel = factory.makeLabel('Issue', 0, 0).add().toFront();
-        chart.recordLabel = factory.makeLabel('Record Count', chart.yAxis[0].ticks[0].label.xy.x, 0).add().toFront();
-        chart.actionLabel = factory.makeLabel('Action', renderedRight, 0).add().toFront();
->>>>>>> Stashed changes
+        chart.actionLabel = factory.makeLabel('Action', 0, 0,{align:'left'});
         chart.fixLabels = [];
 
         Object.values(chart.xAxis[0].ticks).slice(0, -1).forEach((tick, index) => {
           chart.fixLabels.push(
             factory.makeButton(
               'How to fix',
-              renderedRight,
+              0,
               tick.label.xy.y - renderedRightOffset, {
-                align: 'left',
+                align: 'right',
                 stroke: 'blue',
-				fill:'white',
+				        fill:'white',
                 'stroke-width': 3,
                 padding: 12
               }
             )
           )
         });
+        console.log(chart.actionLabel.width);
+        chart.actionLabel.translate(chart.chartWidth-chart.actionLabel.width * 2,0);
+        chart.fixLabels.forEach(f => f.translate(chart.chartWidth-f.width,f.y));
+
       }
     }
   },
