@@ -1,4 +1,4 @@
-/source for the function below: https://jsfiddle.net/BlackLabel/zrL8w067/
+//source for the function below: https://jsfiddle.net/BlackLabel/zrL8w067/
 const setPrototypeMouseOut = (HC) => HC.Series.prototype.onMouseOut = () => HC.fireEvent(this, 'mouseOut');
 setPrototypeMouseOut(Highcharts);
 //some basic recursion
@@ -14,6 +14,7 @@ const showLink = (link) => {
 	link.toNode.dataLabel.show();
 	link.toNode.linksFrom.forEach(childLink => showLink(childLink));
 };
+
 Highcharts.chart('container', {
     chart: {
         type: 'networkgraph',
@@ -51,20 +52,21 @@ Highcharts.chart('container', {
 			linkFormat:''
 			},
 		data: [
-      {from: "Ancient countries", to: "Egypt"},
-			{from: "Ancient countries", to: "Persia"},
-			{from: "Ancient countries", to: "Greece"},
-			
-			{from: "Egypt", to: "Memphis"},
-			{from: "Egypt", to: "Thebes"},
-			{from: "Egypt", to: "Alexandria"},
+	      {from: "Ancient countries", to: "Egypt"},
+				{from: "Ancient countries", to: "Persia"},
+				{from: "Ancient countries", to: "Greece"},
+				
+				{from: "Egypt", to: "Memphis"},
+				{from: "Egypt", to: "Thebes"},
+				{from: "Egypt", to: "Alexandria"},
 
-			{from: "Persia", to: "Perspepolis"},
-			{from: "Persia", to: "Babylon"},
-			{from: "Persia", to: "Bactria"},
-			
-			{from: "Greece", to: "Athens"},
-			{from: "Greece", to: "Sparta"},
-			{from: "Greece", to: "Corinth"},
-    }]
+				{from: "Persia", to: "Perspepolis"},
+				{from: "Persia", to: "Babylon"},
+				{from: "Persia", to: "Bactria"},
+				
+				{from: "Greece", to: "Athens"},
+				{from: "Greece", to: "Sparta"},
+				{from: "Greece", to: "Corinth"}
+			]
+		}]
 });
