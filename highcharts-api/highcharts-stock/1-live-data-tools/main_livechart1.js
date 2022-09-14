@@ -7,26 +7,39 @@
 
 
 (function (H){
-    let data = [[]];
-    const currencyChart = H.stockChart('container', {
+    const datas ={
+		dataLeft: [],
+		//dataRight: []
+	};
+    
+	const leftChart = H.stockChart('container', {
         title: {
-            text: 'USD TO ISK'
+            text: 'LEFT'
         },
 
         series: [{
-            name: "ISK",
-            id:"isk",
-            data: data,
+            data: data.left,
+        }]
+    });
+	/*
+	const rightChart = H.stockChart('container', {
+        title: {
+            text: 'RIGHT'
+        },
+
+        series: [{
+            data: data.right,
 
         }]
     });
-
+*/
     setInterval(()=> {
         H.getJSON('http://api.open-notify.org/iss-now.json', function (resp) {
             data.push([resp.iss_position.latitude,resp.iss_position.longitude]);
         });
-        console.log(data);
-        currencyChart.series[0].setData(data);
+        console.log(resp);
+        leftChart.series[0].setData(data.left);
+		//rightChart.seires[0].setData(data.right);
     }, 1000);
 
 }(Highcharts));
