@@ -7,7 +7,7 @@
 
 
 (function (H){
-    const datas ={
+    const data ={
 		dataLeft: [],
 		//dataRight: []
 	};
@@ -35,7 +35,7 @@
 */
     setInterval(()=> {
         H.getJSON('http://api.open-notify.org/iss-now.json', function (resp) {
-            data.push([resp.iss_position.latitude,resp.iss_position.longitude]);
+            data.left.push([resp.iss_position.latitude,resp.iss_position.longitude]);
         });
         console.log(resp);
         leftChart.series[0].setData(data.left);
