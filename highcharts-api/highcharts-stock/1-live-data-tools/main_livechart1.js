@@ -1,73 +1,70 @@
-// setInterval(()=>{
-//     Highcharts.getJSON('https://jsonplaceholder.typicode.com/posts/1', function(resp){
-//         console.log(resp);
-//     });
-    
-// },3000);
-
-
 (function (H){
     const data ={
+        prevLong: 0.0,
 		left: [],
-		//dataRight: []
 	};
-    
-	const leftChart = H.stockChart('container', {
+	
+    const yieldData = () => {
+        Highcharts.getJSON('http://api.open-notify.org/iss-now.json', (resp) => {
+            
+            let currentPoint = parseFloat(resp.iss_position.longitude) - data.prevLong;
+
+            data.left.push([
+                parseFloat(resp.timestamp),
+                currentPoint
+                ]);
+            data.prevLong = parseFloat(resp.iss_position.longitude);
+            leftChart.series.forEach(s => s.setData(data.left.slice(2)));
+        });
+    }
+
+    const leftChart = H.stockChart('container', {
         title: {
             text: 'LEFT'
         },
 
-        series: [{
-            data: data.left,
-        }]
-    });
-	/*
-	const rightChart = H.stockChart('container', {
-        title: {
-            text: 'RIGHT'
+        yAxis:[{
+            height: '30%',
+            offset: 0,
         },
+        {
+            height: '30%',
+            top: '30%',
+        },
+        {
+            height: '30%',
+            top: '60%',
+        }],
 
-        series: [{
-            data: data.right,
+        series: [
+            {
+                yAxis:0,
+                dataGrouping:{
+                    enabled:false,
+                }
+            },
+            {
+                yAxis:1,
+                
+                dataGrouping: {
+                    approximation: 'average',
+                    enabled: true,
+                    forced:true,
 
-        }]
+                }
+            },
+            {
+                yAxis:2,
+                dataGrouping: {
+                    approximation: 'sum',
+                    enabled: true,
+                }
+            },
+        ]
     });
-*/
+
     setInterval(()=> {
-        H.getJSON('http://api.open-notify.org/iss-now.json', function (resp) {
-            data.left.push([resp.iss_position.latitude,resp.iss_position.longitude]);
-        });
-        console.log(resp);
-        leftChart.series[0].setData(data.left);
-		//rightChart.seires[0].setData(data.right);
-    }, 1000);
+        yieldData();
+    }, 300);
 
 }(Highcharts));
-
-// (function (H){
-//     let data = [];
-//     const currencyChart = H.stockChart('container', {
-//         title: {
-//             text: 'USD TO ISK'
-//         },
-
-//         series: [{
-//             name: "ISK",
-//             id:"isk",
-//             data: data,
-//             dataGrouping:{
-//                 enabled:true,
-//                 forced:true,
-//             }
-//         }
-//     });
-
-//     setInterval(()=> {
-//         H.getJSON('https://open.er-api.com/v6/latest/USD', function (resp) {
-//             data.push(resp.rates['ISK']);
-//         });
-
-//         currencyChart.series[0].setData(data);
-//     }, 1000);
-
-// }(Highcharts));
