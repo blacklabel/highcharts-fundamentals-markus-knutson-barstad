@@ -8,7 +8,7 @@
 
 (function (H){
     const data ={
-		dataLeft: [],
+		left: [],
 		//dataRight: []
 	};
     
