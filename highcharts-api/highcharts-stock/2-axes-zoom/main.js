@@ -1,6 +1,8 @@
 const data = [0,20,40,60,80,100,120];
+
 //const focal = 60;
 //console.log(this.yAxis[0],this.yAxis[0].series[0].data[3].plotY);
+
 const extremeAround = (axis, len, focal) => {
 	axis.setExtremes(
 		focal - axis.toValue(len),
@@ -19,19 +21,12 @@ window.addEventListener('mouseover',(e) => {
 	if(holdingClick){
 		if(lastYPos === null){
 			lastYPos = e.y;
-			//yDir = 0;
 			yDimension = 0;
 		}else{
-			yDimension = lastYPos - e.y;
+			yDimension = e.y - lastYPos;
+			
 		}
-		/*
-		}else if(lastYPos - e.y > 0){
-			yDir =  1;
-		}else if(lastYPos - e.y < 0){
-			yDir =  -1;
-		}else{
-			yDir = 0;
-		}*/
+		console.log(yDimension);
 	}else{
 		lastYPos = null;
 	}
@@ -44,11 +39,13 @@ Highcharts.stockChart('container', {
 		},
 		events:{
 			load: function(){
-				extremeAround(this.yAxis[0],this.yAxis[0].series[0].data[6].plotY,60);
+				this.yAxis[0].setExtremes(null,null);
 			},
 			selection: function(e){
 				if(!e.resetSelection){
-					extremeAround(this.yAxis[0],e.y,60);
+					extremeAround(this.yAxis[0],yDimension,60);
+				}else{
+					this.yAxis[0].setExtremes(null,null);
 				}
 			}
 		}
@@ -57,8 +54,7 @@ Highcharts.stockChart('container', {
 		text: ''
 	},
 	yAxis:{
-		startOnTick:false,
-		endOnTick:false,
+
 		events:{
 			setExtremes:function(e){
 				if(!e.trigger){
