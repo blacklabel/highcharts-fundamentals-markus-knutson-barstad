@@ -43,7 +43,7 @@ Highcharts.stockChart('container', {
 			},
 			selection: function(e){
 				if(!e.resetSelection){
-					extremeAround(this.yAxis[0],yDimension,60);
+					extremeAround(this.yAxis[0],e.y,yDimension,60);
 				}else{
 					this.yAxis[0].setExtremes(null,null);
 				}
