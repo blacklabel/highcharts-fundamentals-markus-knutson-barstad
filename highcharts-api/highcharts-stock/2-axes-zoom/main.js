@@ -1,59 +1,42 @@
-const data = [-60,-40,-20,0,20,40,60]
-const extremeAround = (axis, len, focal) => {
-	axis.setExtremes(
-		focal - Math.abs(axis.toValue(len)),
-		focal + Math.abs(axis.toValue(len)),
-	);
-};
-
-/*
-	todo: flytt mouseover-detection til
-		- label mouseover
-		- yLine mouseover
-*/
+/*remove and regenerate plotband whenever setting new extremes*/
 
 Highcharts.stockChart('container', {
 	chart:{
-		zooming:{
-			type:"xy",
-		},
 		events:{
 			load: function(){
 				this.holdingClick = false; //whether user is holding mousebutton clicked
-				this.yScale = 0; //space of the box the user dragged
-				this.mouseLastYPos = null; //where the users drag originated
 				this.minX = 0; //minimum-extreme for the xAxis
-
-				window.addEventListener('mousedown',() => this.holdingClick = true);
-				window.addEventListener('mouseup',() => this.holdingClick = false);
-				window.addEventListener('mouseover',(e) => {
-					if(this.holdingClick){
-						if(this.mouseLastYPos === null){
-							this.mouseLastYPos = e.y;
-							this.yScale = 0;
-						}else{
-							this.yScale = e.y - this.mouseLastYPos;
-						}
-					}else{
-						this.mouseLastYPos = null;
-					}
+				this.yScaleAccelerator = 0.0002;
+								
+				window.addEventListener('mousedown',() => {
+					console.log("CLICKD");
+					this.holdingClick = true;
 				});
+								
+				window.addEventListener('mouseup',() => {
+					console.log("RELEASD");
+					this.holdingClick = false;
+				});
+
+				window.addEventListener('mousemove', (e) => {				
+					const old = this.yAxis[0].getExtremes();
+
+					if(this.holdingClick === true){
+						const newExtremeOffset = this.yAxis[0].toValue(e.y)*this.yScaleAccelerator / 10;
+						this.yAxis[0].setExtremes(old.min - newExtremeOffset, old.max + newExtremeOffset);
+						this.yScaleAccelerator = Math.max(this.yScaleAccelerator + 0.0002,1);
+					}else{
+						this.yScaleAccelerator = 0.00002;
+					}
+				})
 
 				window.addEventListener('wheel', (e) => {
 					this.minX += e.deltaY * 0.01;
 					this.minX = Math.max(this.minX, 0);
 					this.xAxis[0].setExtremes(this.minX,null);
 				});
-
+				this.series[0].setData([-6000,-4000,-2000,0,2000,4000,6000]);
 			},
-			selection: function(e){
-				if(!e.resetSelection){
-					extremeAround(this.yAxis[0],this.yScale + e.y,0);
-				}else{
-					this.yAxis[0].setExtremes(null,null);
-				}
-				console.log(this.yAxis[0].series[0].data[3].plotY);
-			}
 		}
 	},
 	title: {
@@ -63,20 +46,35 @@ Highcharts.stockChart('container', {
 		minRange: 0.000001
 	},
 	yAxis:{
+		minRange: 0.000001,
+		startOnTick:false,
+		endOnTick: false,
+		plotBands:[{
+			from: -100000,
+			to: 100000,
+			color:"transparent",
+			
+			// events:{
+			// 	mousemove: function(e){
+			// 		const axis = this.axis;
+			// 		const old = axis.getExtremes();
+
+			// 		if(axis.chart.holdingClick === true){
+			// 			axis.setExtremes(old.min - axis.toValue(e.y), old.max + axis.toValue(e.y));
+			// 		}
+			// 	}
+			// }
+		}],
 		events:{
 			setExtremes:function(e){
-				if(!e.trigger){
-					this.update({
-						min:e.min,
-						max:e.max
-					});
-				}else{
-					e.preventDefault();
-				}
+				this.update({
+					min:e.min,
+					max:e.max
+				});
 			}
 		}
 	},
 	series: [{
-		data: data,
+		data: null,
 	}]
 });
