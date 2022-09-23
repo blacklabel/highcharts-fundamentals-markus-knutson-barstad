@@ -28,54 +28,55 @@ Highcharts.chart('container', {
   },
   xAxis: {
     categories: [
-      '2010',
-      '2011',
-      '2012',
-      '2013',
-      '2014',
-      '2015',
-      '2016',
-      '2017',
-      '2018',
-      '2019',
-      '2010',
-      '2021'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Dec'
     ],
     labels: {
       enabled: true,
       formatter: function() {
         return this.value === this.chart.highlightedCategory ?
-          '<span style="color: #EE4B2B;font-size:12px;font-weight:bold;">' + this.value + '</span>' :
+          '<span style="color: #EE4B2B;font-weight:bolder;">' + this.value + '</span>' :
           this.value;
       }
     }
   },
 
   yAxis: {
+    max:250,
     title: {
       text: ''
     }
   },
 
   series: [{
-    name: 'Oil and gas extraction',
-    data: [13.93, 13.63, 13.73, 13.67, 14.37, 14.89, 14.56,
-      14.32, 14.13, 13.93, 13.21, 12.16
+    name: 'Tokyo',
+    data: [130.93, 130.63, 130.73, 130.67, 140.37, 140.89, 140.56,
+      140.32, 140.13, 130.93, 130.21, 120.16
     ]
   }, {
-    name: 'Manufacturing industries and mining',
-    data: [12.24, 12.24, 11.95, 12.02, 11.65, 11.96, 11.59,
-      11.94, 11.96, 11.59, 11.42, 11.76
+    name: 'New York',
+    data: [120.24, 120.24, 110.95, 120.02, 110.65, 110.96, 110.59,
+      110.94, 110.96, 110.59, 110.42, 110.76
     ]
   }, {
-    name: 'Road traffic',
-    data: [10.00, 9.93, 9.97, 10.01, 10.23, 10.26, 10.00,
-      9.12, 9.36, 8.72, 8.38, 8.69
+    name: 'London',
+    data: [100.00, 90.93, 90.97, 100.01, 100.23, 100.26, 100.00,
+      90.12, 90.36, 80.72, 80.38, 80.69
     ]
   }, {
-    name: 'Agriculture',
-    data: [4.35, 4.32, 4.34, 4.39, 4.46, 4.52, 4.58, 4.55,
-      4.53, 4.51, 4.49, 4.57
+    name: 'Berlin',
+    data: [40.35, 40.32, 40.34, 40.39, 40.46, 40.52, 40.58, 40.55,
+      40.53, 40.51, 40.49, 40.57
     ]
   }]
 });
