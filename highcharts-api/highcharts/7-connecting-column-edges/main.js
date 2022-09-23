@@ -11,47 +11,40 @@ const dataMaker = (min, max) => {
   return arr;
 }
 
-const drawForSeries = [true, true, true];
-
 Highcharts.chart('container', {
-  accessibility: {
-    enabled: false
-  },
-
   chart: {
     type: "column",
 
     events: {
       render() {
-        const ren = this.renderer;
+        const chart = this;
 
-        if (this.customLines) {
-          this.customLines.forEach(p => p.destroy());
+        if (chart.customLines) {
+          chart.customLines.forEach(line => line.destroy());
         }
 
-        this.customLines = [];
+        chart.customLines = [];
 
-        this.series.forEach((s, i) => {
+        chart.series.forEach((series) => {
 
-          if (drawForSeries[i]) { //if a boolean in this array is set to true, we will draw paths for the series' cols
+          if (series.visible) { //if a boolean in this array is set to true, we will draw paths for the series' cols
+            series.data.forEach((dataPoint, dataIndex) => {
 
-            s.data.forEach((d, i) => {
+              if (dataIndex > 0) { //we start drawing from the second col back to the first one and so forth
+                const previousPoint = series.data[dataIndex - 1];
 
-              if (i > 0) { //we start drawing from the second col back to the first one and so forth
-
-                this.customLines.push( //we push a path to the customLine-array
-                  ren.path([
+                chart.customLines.push( //we push a path to the customLine-array
+                  chart.renderer.path([
                     'M',
-                    this.plotLeft + d.shapeArgs.x, //left side of right col
-                    this.plotTop + d.shapeArgs.y,
-
+                    chart.plotLeft + dataPoint.shapeArgs.x, //left side of right col
+                    chart.plotTop + dataPoint.shapeArgs.y,
                     'L',
-                    this.plotLeft + s.data[i - 1].shapeArgs.x + s.data[i - 1].shapeArgs.width, //right side of left col
-                    this.plotTop + s.data[i - 1].shapeArgs.y
+                    chart.plotLeft + previousPoint.shapeArgs.x + previousPoint.shapeArgs.width, //right side of left col
+                    chart.plotTop + previousPoint.shapeArgs.y
                   ])
                   .attr({
                     'stroke-width': 2,
-                    stroke: s.color
+                    stroke: series.color
                   })
                 );
               }
@@ -59,20 +52,8 @@ Highcharts.chart('container', {
           }
         });
 
-        this.customLines.forEach(p => {
-          p.add().toFront();
-        });
+        chart.customLines.forEach(line => line.add().toFront());
       },
-    }
-  },
-
-  plotOptions: {
-    series: {
-      events: {
-        legendItemClick: function() {
-          drawForSeries[this.index] = !drawForSeries[this.index];
-        }
-      }
     }
   },
 
