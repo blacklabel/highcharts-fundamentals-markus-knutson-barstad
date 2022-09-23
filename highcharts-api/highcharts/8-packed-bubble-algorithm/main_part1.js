@@ -8,12 +8,18 @@ const buildSeries = (n) => {
   }
   return series;
 }
-
 Highcharts.chart('container', {
   chart: {
     type: 'packedbubble',
+    events:{
+      load:function(){
+        const chart = this;
+        setInterval(()=>{
+          chart.series[1].points[5].update({series:chart.series[0]});
+        }, 1000);
+      }
+    }
   },
-
   plotOptions: {
     packedbubble: {
       layoutAlgorithm: {
@@ -22,6 +28,5 @@ Highcharts.chart('container', {
       }
     }
   },
-
   series: buildSeries(2)
 });
