@@ -11,18 +11,18 @@ class labelFactory {
       .toFront();
   }
   
-  makeButton(text, xPos, yPos, attr) {
+  makeButton(text, xPos, yPos) {
     return this.factoryRen
-      .button(text, xPos, yPos)
-      .attr({...attr})
-      .add()
-      .toFront();
-  }
-
-  makeButton(text, xPos, yPos, attr) {
-    return this.factoryRen
-      .label(text, xPos, yPos)
-      .attr({...attr})
+      .button(text, xPos, yPos, null, 
+      {
+        'align': 'right',
+        'stroke': 'blue',
+        'fill':'white',
+        'stroke-width': 3,
+        'padding': 12,
+      },{
+        'stroke': 'red',
+      })
       .add()
       .toFront();
   }
@@ -43,17 +43,14 @@ Highcharts.chart('container', {
 
   chart: {
     type: 'bar',
-	 margin:65,
+	 marginTop:65,
 	
 
     events: {
       render: function() {
         const chart = this;
         const factory = new labelFactory(chart.renderer);
-
-        //label positions
-        const renderedRight = chart.chartWidth//chart.yAxis[0].ticks[350].label.xy.x;
-
+        const renderedRight = chart.chartWidth
         const renderedRightOffset = chart.series[0].data[0].dataLabel.alignAttr.y;
 
         factory.destroyExisting(chart.issueLabel);
@@ -67,24 +64,11 @@ Highcharts.chart('container', {
         chart.fixLabels = [];
 
         Object.values(chart.xAxis[0].ticks).slice(0, -1).forEach((tick, index) => {
-          chart.fixLabels.push(
-            factory.makeButton(
-              'How to fix',
-              0,
-              tick.label.xy.y - renderedRightOffset, {
-                align: 'right',
-                stroke: 'blue',
-				        fill:'white',
-                'stroke-width': 3,
-                padding: 12
-              }
-            )
-          )
+          chart.fixLabels.push(factory.makeButton('How to fix', 0, tick.label.xy.y - renderedRightOffset))
         });
-        console.log(chart.actionLabel.width);
+
         chart.actionLabel.translate(chart.chartWidth-chart.actionLabel.width * 2,0);
         chart.fixLabels.forEach(f => f.translate(chart.chartWidth-f.width,f.y));
-
       }
     }
   },
@@ -100,6 +84,7 @@ Highcharts.chart('container', {
 
   yAxis: {
     tickPositions: [0, 50, 100, 150, 200, 250, 300, 350, 400],
+    max:350,
     gridLineWidth: 0,
     title: {
       text: 'Amount'
