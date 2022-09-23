@@ -7,9 +7,6 @@ Highcharts.chart('container', {
       }
     }
   },
-  title: {
-    text: ''
-  },
   plotOptions: {
     series: {
       point: {
@@ -50,14 +47,9 @@ Highcharts.chart('container', {
       }
     }
   },
-
   yAxis: {
-    max:250,
-    title: {
-      text: ''
-    }
+    max: 250,
   },
-
   series: [{
     name: 'Tokyo',
     data: [130.93, 130.63, 130.73, 130.67, 140.37, 140.89, 140.56,
