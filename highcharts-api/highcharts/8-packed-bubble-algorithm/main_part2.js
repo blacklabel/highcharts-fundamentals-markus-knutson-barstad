@@ -9,7 +9,6 @@ const radiiDistance = (c1, c2) => Math.sqrt(squared(c1.x - c2.x) + squared(c1.y 
 const collides = (c1, c2) => (radiiDistance(c1, c2) <= c1.r + c2.r);
 
 const buildRandData = (n) => {
-
   const data = [];
   while (n--) {
     data.push({
@@ -17,44 +16,50 @@ const buildRandData = (n) => {
       color: randCol()
     })
   }
-
   return data.sort((a, b) => b.value - a.value);
 };
 
-const circleObj = (x, y, r) => {
-  return {
-    x: x,
-    y: y,
-    r: r,
-  }
-};
-
 const circleFromPoint = (p) => {
-  return circleObj(
-    p.graphic.x + p.radius, //X1
-    p.graphic.y + p.radius * 2, //Y1
-    p.radius //R1
-  );
+    return {
+        x: (p.graphic.x + p.radius), //X1
+        y: (p.graphic.y + p.radius * 2), //Y1
+        r: p.radius //R1
+    }
 }
 
 const bubblesTouching = (mainB, otherB) => collides(circleFromPoint(mainB), circleFromPoint(otherB));
 
 const otherBubbles = (toFilter, bubbles) => bubbles.filter(b => b.value !== toFilter.value)
 
-const c = Highcharts.chart('container', {
+Highcharts.chart('container', {
   chart: {
     type: 'packedbubble',
-    margin: 0
-  },
+    margin: 0,
+    events:{
+        load: function(){
+            const chart = this;
+            chart.bubbles = chart.series[0].data;
 
+            setInterval(() => {
+                chart.bubbles.forEach(mainB => {
+                    otherBubbles(mainB, chart.bubbles).forEach(otherB => {
+                      if (bubblesTouching(otherB, mainB)) {
+                        otherB.update({
+                          color: randCol(otherB.color)
+                        });
+                      }
+                    });
+                  });
+                }, 144);
+        }
+    }
+  },
   tooltip: {
     enabled: false
   },
-
   legend: {
     enabled: false,
   },
-
   plotOptions: {
     packedbubble: {
       layoutAlgorithm: {
@@ -65,35 +70,7 @@ const c = Highcharts.chart('container', {
       },
     }
   },
-
   series: [{
     data: buildRandData(3),
-
-    point: {
-      events: {
-        update: event => {
-          this.color = event.options;
-        }
-      }
-    },
   }],
 });
-
-const bubbles = c.series[0].data;
-
-const runLoop = () => {
-
-  bubbles.forEach(mainB => {
-
-    otherBubbles(mainB, bubbles).forEach(otherB => {
-
-      if (bubblesTouching(otherB, mainB)) {
-        otherB.update({
-          color: randCol(otherB.color)
-        });
-      }
-    });
-  });
-}
-
-setInterval(runLoop, 144);
