@@ -9,7 +9,8 @@ const commonData = [{
   {
     name: 'trollfaces',
     y: 15
-  }];
+  }
+];
 
 Highcharts.wrap(Highcharts.Tooltip.prototype, 'hide', function(p, delay) {
   if (this === this.chart.tooltip) {
@@ -30,10 +31,10 @@ const c = Highcharts.chart('container', {
         chart.customTooltip = new Highcharts.Tooltip(chart, Highcharts.merge(chart.options.tooltip));
         chart.manualHover = (series, pointName) => {
           series.points.forEach(p => {
-            if(p.name === pointName){
+            if (p.name === pointName) {
               p.setState('hover');
               chart.customTooltip.refresh(p);
-            }else{
+            } else {
               p.setState('inactive');
             }
           });
@@ -47,7 +48,7 @@ const c = Highcharts.chart('container', {
       showInLegend: true,
       point: {
         events: {
-          legendItemClick(e){
+          legendItemClick(e) {
             this.series.chart.series[1].data.forEach(d => {
               if (d.name === this.name) {
                 d.update({
@@ -56,8 +57,8 @@ const c = Highcharts.chart('container', {
               }
             });
           },
-          mouseOver(e){
-            this.series.chart.manualHover(this.series.chart.series[1],this.name);
+          mouseOver(e) {
+            this.series.chart.manualHover(this.series.chart.series[1], this.name);
           }
         }
       }
@@ -68,7 +69,7 @@ const c = Highcharts.chart('container', {
       point: {
         events: {
           mouseOver(e) {
-            this.series.chart.manualHover(this.series.chart.series[0],this.name);
+            this.series.chart.manualHover(this.series.chart.series[0], this.name);
           }
         }
       }
@@ -79,9 +80,9 @@ const c = Highcharts.chart('container', {
 
 c.legend.allItems.forEach(l => {
   l.legendItem.element.addEventListener('mouseover', () => {
-      c.series[1].points.forEach(d => d.name === l.name ? d.setState('hover') : d.setState('inactive'));
+    c.series[1].points.forEach(d => d.name === l.name ? d.setState('hover') : d.setState('inactive'));
   });
   l.legendItem.element.addEventListener('mouseout', () => {
-      c.series[1].points.forEach(d => d.setState('normal'));
+    c.series[1].points.forEach(d => d.setState('normal'));
   });
 });
