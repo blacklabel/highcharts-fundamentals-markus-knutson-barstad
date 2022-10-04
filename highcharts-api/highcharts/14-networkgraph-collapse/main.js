@@ -1,4 +1,4 @@
-Highcharts.Series.prototype.onMouseOut = () => HC.fireEvent(this, 'mouseOut');
+Highcharts.Series.prototype.onMouseOut = () => Highcharts.fireEvent(this, 'mouseOut');
 const hideLink = (link) => {
  link.graphic.hide();
  link.toNode.graphic.hide();
