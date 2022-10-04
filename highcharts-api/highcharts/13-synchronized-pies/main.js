@@ -9,33 +9,45 @@ const commonData = [{
   {
     name: 'trollfaces',
     y: 15
-  },
-];
+  }];
+
+Highcharts.wrap(Highcharts.Tooltip.prototype, 'hide', function(p, delay) {
+  if (this === this.chart.tooltip) {
+    p.call(this, delay);
+    p.call(this.chart.customTooltip, delay);
+  }
+})
 
 const c = Highcharts.chart('container', {
   chart: {
     type: 'pie',
     title: {
       text: ''
-    }
-  },
-  plotOptions: {
-    pie: {
-      events: {
-        mouseOver: function() {
-          console.log('AWDAWD');
-        }
+    },
+    events: {
+      load() {
+        const chart = this;
+        chart.customTooltip = new Highcharts.Tooltip(chart, Highcharts.merge(chart.options.tooltip));
+        chart.manualHover = (series, pointName) => {
+          series.points.forEach(p => {
+            if(p.name === pointName){
+              p.setState('hover');
+              chart.customTooltip.refresh(p);
+            }else{
+              p.setState('inactive');
+            }
+          });
+        };
       }
     }
   },
-
   series: [{
       center: ['25%'],
       data: commonData,
       showInLegend: true,
       point: {
         events: {
-          legendItemClick: function(e) {
+          legendItemClick(e){
             this.series.chart.series[1].data.forEach(d => {
               if (d.name === this.name) {
                 d.update({
@@ -44,36 +56,32 @@ const c = Highcharts.chart('container', {
               }
             });
           },
-          mouseOver: function(e) {
-            this.series.chart.series[1].data.forEach(d => {
-              d.name === this.name ? d.setState('hover') : d.setState('inactive');
-            });
-          },
+          mouseOver(e){
+            this.series.chart.manualHover(this.series.chart.series[1],this.name);
+          }
         }
       }
     },
     {
       center: ['75%'],
-      data: commonData
+      data: commonData,
+      point: {
+        events: {
+          mouseOver(e) {
+            this.series.chart.manualHover(this.series.chart.series[0],this.name);
+          }
+        }
+      }
+
     }
   ]
 });
 
-c.legend.allItems.forEach(l => { //trying to make legend behave uniformily
-
+c.legend.allItems.forEach(l => {
   l.legendItem.element.addEventListener('mouseover', () => {
-    c.series.forEach(ser => {
-      ser.points.forEach(d => {
-        d.name === l.name ? d.setState('hover') : d.setState('inactive');
-      })
-    });
-  })
-
+      c.series[1].points.forEach(d => d.name === l.name ? d.setState('hover') : d.setState('inactive'));
+  });
   l.legendItem.element.addEventListener('mouseout', () => {
-    c.series.forEach(ser => {
-      ser.points.forEach(d => {
-        d.setState('normal');
-      })
-    });
+      c.series[1].points.forEach(d => d.setState('normal'));
   });
 });
