@@ -1,15 +1,15 @@
 Highcharts.Series.prototype.onMouseOut = () => Highcharts.fireEvent(this, 'mouseOut');
-const hideLink = (link) => {
+const hidePoint = (link) => {
  link.graphic.hide();
  link.toNode.graphic.hide();
  link.toNode.dataLabel.hide();
- link.toNode.linksFrom.forEach(childLink => hideLink(childLink));
+ link.toNode.linksFrom.forEach(childLink => hidePoint(childLink));
 };
-const showLink = (link) => {
+const showPoint = (link) => {
  link.graphic.show();
  link.toNode.graphic.show();
  link.toNode.dataLabel.show();
- link.toNode.linksFrom.forEach(childLink => showLink(childLink));
+ link.toNode.linksFrom.forEach(childLink => showPoint(childLink));
 };
 
 Highcharts.chart('container', {
@@ -35,12 +35,12 @@ Highcharts.chart('container', {
          if (!point.linksHidden) {
            point.linksHidden = true;
            point.linksFrom.forEach(function(link) {
-             hideLink(link);
+             hidePoint(link);
            });
          } else {
            point.linksHidden = false;
            point.linksFrom.forEach(function(link) {
-             showLink(link);
+             showPoint(link);
            });
          }
        }
